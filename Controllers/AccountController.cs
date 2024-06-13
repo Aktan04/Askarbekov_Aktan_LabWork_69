@@ -63,7 +63,6 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Register()
     {
-        ViewBag.Roles = Enum.GetValues(typeof(UserRole)).Cast<UserRole>();
         return View();
     }
 
@@ -73,7 +72,6 @@ public class AccountController : Controller
     {
         User? findUserWithEmail = _context.Users.FirstOrDefault(u => u.Email == model.Email);
         User? findUserWithUserName = _context.Users.FirstOrDefault(u => u.UserName == model.UserName);
-        ViewBag.Roles = Enum.GetValues(typeof(UserRole)).Cast<UserRole>();
         if (findUserWithEmail != null || findUserWithUserName != null)
         {
             ModelState.AddModelError("UserName", "Логин или Email уже существует");
@@ -111,9 +109,11 @@ public class AccountController : Controller
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                string roleName = model.Role.ToString().ToLower();
-                await _userManager.AddToRoleAsync(user, roleName);
-                await _signInManager.SignInAsync(user, false);
+                await _userManager.AddToRoleAsync(user, "user");
+                if (!User.IsInRole("admin"))
+                {
+                    await _signInManager.SignInAsync(user, false);
+                }
                 return RedirectToAction("Index", "Home");// change redirect 
             }
 

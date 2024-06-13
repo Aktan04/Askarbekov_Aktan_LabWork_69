@@ -31,7 +31,4 @@ public class RegisterViewModel
     
     [Required(ErrorMessage = "Имя пользователя обязательно к заполнению")]
     public string NickName { get; set; }
-    
-    [Required]
-    public UserRole Role { get; set; }
 }
