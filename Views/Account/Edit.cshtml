@@ -1,0 +1,45 @@
+@model User
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h2>Редактирование профиля</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" asp-controller="Account" method="post">
+            <input asp-for="Id" type="hidden" />
+            @Html.ValidationSummary(true)
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Email</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label">Логин</label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NickName" class="control-label">Никнейм</label>
+                <input asp-for="NickName" class="form-control" />
+                <span asp-validation-for="NickName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFile">Изображение</label>
+                <input asp-for="ImageFile" type="file" name="ImageFile" class="form-control">
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Редактировать</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

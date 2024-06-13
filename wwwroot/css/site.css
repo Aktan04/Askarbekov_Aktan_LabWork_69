@@ -20,3 +20,54 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.profile-header {
+  position: relative;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar-container {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  border: 5px solid white;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-name {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.profile-email {
+  font-size: 1.1em;
+  color: #666;
+}
+
+.profile-details {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.profile-details .card-body {
+  padding: 20px;
+}
+
+.profile-details .list-group-item {
+  border: none;
+  padding-left: 0;
+  padding-right: 0;
+}
