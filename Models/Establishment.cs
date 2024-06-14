@@ -16,6 +16,7 @@ public class Establishment
     public string Description { get; set; }
 
     public ICollection<Dish>? Dishes { get; set; }
+    public ICollection<Cart>? Cart { get; set; }
     
     [NotMapped]
     public IFormFile? ImageFile { get; set; }
