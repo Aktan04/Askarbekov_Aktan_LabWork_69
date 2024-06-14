@@ -1,0 +1,36 @@
+@model List<Cart>
+
+
+<div id="cart" class="cart-sidebar">
+    <h3>Корзина</h3>
+    @if (!Model.Any())
+    {
+        <p>Корзина пуста.</p>
+    }
+    else
+    {
+        @foreach (var establishmentGroup in Model.GroupBy(c => c.Establishment))
+        {
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h4 class="mb-0">@establishmentGroup.Key.Name</h4>
+                </div>
+                <div class="card-body">
+                    @foreach (var dishGroup in establishmentGroup.GroupBy(c => c.Dish))
+                    {
+                        var count = dishGroup.Count();
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <p class="mb-0">@dishGroup.Key.Name - @count шт. - @dishGroup.Key.Price * @count руб.</p>
+                            </div>
+                            <div>
+                                <button class="btn btn-danger btn-sm" onclick="removeFromCart(@dishGroup.First().Id)">Удалить</button>
+                            </div>
+                        </div>
+                    }
+                    <p class="text-end fw-bold">Итого: @establishmentGroup.Sum(c => c.Dish.Price) руб.</p>
+                </div>
+            </div>
+        }
+    }
+</div>
