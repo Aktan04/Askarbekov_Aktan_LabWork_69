@@ -1,0 +1,24 @@
+@model List<Establishment>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<h1 class="mb-4">Все заведения</h1>
+
+<div class="row">
+    @foreach (var establishment in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="@establishment.Image" class="card-img-top" alt="@establishment.Name">
+                <div class="card-body">
+                    <h5 class="card-title">@establishment.Name</h5>
+                    <p class="card-text">@establishment.Description</p>
+                    <a href="@Url.Action("Details", new { id = establishment.Id })" class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

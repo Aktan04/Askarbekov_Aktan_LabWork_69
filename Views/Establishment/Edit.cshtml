@@ -1,0 +1,56 @@
+@model Establishment
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+
+<h1>Редактировать заведение</h1>
+
+<form asp-action="Edit" method="post" asp-anti-forgery="true" class="needs-validation" novalidate enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ImageFile">Изображение</label>
+        <input asp-for="ImageFile" type="file" name="ImageFile" class="form-control">
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-primary" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Вернуться к списку</a>
+</div>
+
+<h2>Блюда</h2>
+@foreach (var dish in Model.Dishes)
+{
+    <div>
+        <h3>@dish.Name</h3>
+        <p>@dish.Description</p>
+        <p>Цена: @dish.Price</p>
+        <a asp-action="EditDish" asp-route-id="@dish.Id" class="btn btn-warning">Редактировать блюдо</a>
+        <form asp-action="DeleteDish" method="post" style="display:inline;">
+            <input type="hidden" name="id" value="@dish.Id" />
+            <input type="submit" value="Удалить" class="btn btn-danger" />
+        </form>
+    </div>
+}
+
+<a asp-action="CreateDish" asp-route-establishmentId="@Model.Id" class="btn btn-success">Добавить блюдо</a>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
