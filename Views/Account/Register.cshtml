@@ -4,8 +4,16 @@
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
+@if (User.Identity.IsAuthenticated)
+{
+    <h2>Создание</h2>
 
-<h2>Регистрация</h2>
+}
+else
+{
+    <h2>Регистрация</h2>
+    
+}
 
 <form asp-action="Register" asp-controller="Account" asp-anti-forgery="true" class="needs-validation" novalidate enctype="multipart/form-data">
     @Html.ValidationSummary(true)
@@ -55,7 +63,16 @@
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Регистрация</button>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <button type="submit" class="btn btn-primary">Создать</button>
+
+        }
+        else
+        {
+            
+            <button type="submit" class="btn btn-primary">Регистрация</button>
+        }
     </div>
 </form>
 

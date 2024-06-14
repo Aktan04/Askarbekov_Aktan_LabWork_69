@@ -1,0 +1,32 @@
+@model User
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="container text-center pt-5 ">
+    <div class="row">
+        <div class="col-4 mx-auto border border-4 py-3">
+            <dl class="dl-horizontal ">
+                <dt>Логин</dt>
+                <dd>
+                    @Html.DisplayFor(model => model.UserName)
+                </dd>
+            
+                <dt>Email</dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+            
+                <dt>Никнейм</dt>
+                <dd>
+                    @Html.DisplayFor(model => model.NickName)
+                </dd>
+            </dl>
+            <form asp-controller="Account" asp-action="Delete" method="post">
+                <button type="submit" class="btn btn-danger rounded-0 px-3 py-2 ">Удалить</button>
+            </form>
+        </div>
+    </div>
+</div>

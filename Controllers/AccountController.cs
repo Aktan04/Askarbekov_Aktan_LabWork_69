@@ -25,6 +25,28 @@ public class AccountController : Controller
         _hostEnvironment = hostEnvironment;
     }
     
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> Index()
+    {
+        if (User.Identity.IsAuthenticated)
+        {
+            if (User.IsInRole("admin"))
+            {
+                var users = await _context.Users.Where(u => u.Id > 1).ToListAsync();
+                var userRoles = new Dictionary<int, IList<string>>();
+                foreach (var user in users)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    userRoles[user.Id] = roles;
+                }
+                ViewBag.UserRoles = userRoles;
+                return View(users);
+            }
+        }
+
+        return NotFound();
+    }
+    
     [Authorize]
     public async Task<IActionResult> Profile(int? userId)
     {
@@ -40,6 +62,52 @@ public class AccountController : Controller
         }
 
         return View(user);
+    }
+
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> AddToManager(int id)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user == null)
+        {
+            return NotFound("Пользователь не найден");
+        }
+        var identityUser = await _userManager.FindByEmailAsync(user.Email);
+        var resultOfRemove = await _userManager.RemoveFromRoleAsync(identityUser, "user");
+        if (!resultOfRemove.Succeeded)
+        {
+            return BadRequest("Не удалось удалить роль пользователя");
+        }
+        var result = await _userManager.AddToRoleAsync(identityUser, "manager");
+        if (!result.Succeeded)
+        {
+            return BadRequest("Не удалось добавить роль менеджера");
+        }
+        
+        return RedirectToAction("Index", "Account");
+    }
+    
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> RemoveFromManager(int id)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user == null)
+        {
+            return NotFound("Пользователь не найден");
+        }
+        var identityUser = await _userManager.FindByEmailAsync(user.Email);
+        var resultOfRemove = await _userManager.RemoveFromRoleAsync(identityUser, "manager");
+        if (!resultOfRemove.Succeeded)
+        {
+            return BadRequest("Не удалось удалить роль менеджера");
+        }
+        var result = await _userManager.AddToRoleAsync(identityUser, "user");
+        if (!result.Succeeded)
+        {
+            return BadRequest("Не удалось добавить роль пользователя");
+        }
+        
+        return RedirectToAction("Index", "Account");
     }
 
     [HttpGet]
@@ -59,15 +127,14 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(User user)
     {
-        User? findUserWithEmail = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email && u.Id != user.Id);
-        User? findUserWithUserName = await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName && u.Id != user.Id);
-        if (findUserWithEmail != null || findUserWithUserName != null)
+        if (_context.Users.Any(u => u.Email == user.Email && u.Id != user.Id) || 
+            _context.Users.Any(u => u.UserName == user.UserName && u.Id != user.Id))
         {
             ModelState.AddModelError(string.Empty, "Логин или Email уже существует");
             return View(user);
         }
         string? userId = _userManager.GetUserId(User);
-        User identityUser = await _userManager.FindByIdAsync(userId);
+        User identityUser = await _userManager.FindByIdAsync(Convert.ToString(user.Id));
         if (identityUser != null)
         {
             if (ModelState.IsValid)
@@ -103,6 +170,39 @@ public class AccountController : Controller
         }
 
         return View(user);
+    }
+    
+    [Authorize]
+    [HttpGet]
+    [ActionName("Delete")]
+    [Authorize(Roles = "admin")]
+    public async Task<IActionResult> ConfirmDelete(int? id)
+    {
+        if (id != null)
+        {
+            User? user = await _context.Users.FirstOrDefaultAsync(p => p.Id == id);
+            if (user != null && User.IsInRole("admin"))
+            {
+                return View(user);
+            }
+        }
+        return NotFound();
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id != null)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+        }
+        return NotFound();
     }
     
     [HttpGet]

@@ -31,6 +31,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Profile">Профиль</a>
                         </li>
+                        if (User.IsInRole("admin"))
+                        {
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Список пользователей</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Создать нового пользователя</a>
+
+                        }
                     }
                     else
                     {

@@ -1,0 +1,49 @@
+@using Microsoft.AspNetCore.Identity
+@model List<User>
+@inject UserManager<User> UserManager
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+    var userRoles = ViewBag.UserRoles as Dictionary<int, IList<string>>;
+
+}
+
+<h2>Список пользователей</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Avatar</th>
+            <th>UserName</th>
+            <th>Email</th>
+            <th>NickName</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@user.Avatar" alt="Avatar" width="50" height="50" />
+                </td>
+                <td><a asp-action="Profile" asp-controller="Account" asp-route-userId="@user.Id">@user.UserName</a></td>
+                <td>@user.Email</td>
+                <td>@user.NickName</td>
+                <td>
+                    
+                    @if (userRoles.ContainsKey(user.Id) && userRoles[user.Id].Contains("user"))
+                    {
+                        <a class="btn btn-primary" asp-action="AddToManager" asp-controller="Account" asp-route-id="@user.Id">Назначить менеджером</a>
+                    }
+                    @if (userRoles.ContainsKey(user.Id) && userRoles[user.Id].Contains("manager"))
+                    {
+                        <a class="btn btn-primary" asp-action="RemoveFromManager" asp-controller="Account" asp-route-id="@user.Id">Снять с роли менеджера</a>
+                    }
+                    <a class="btn btn-secondary" asp-action="Edit" asp-controller="Account" asp-route-id="@user.Id">Редактировать</a>
+                    <a class="btn bg-danger" asp-action="Delete" asp-controller="Account" asp-route-id="@user.Id">Удалить пользователя</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -12,4 +12,5 @@ public class User : IdentityUser<int>
     public string NickName { get; set; }
     [NotMapped]
     public IFormFile? ImageFile { get; set; }
+    public IdentityRole? Role { get; set; }
 }
